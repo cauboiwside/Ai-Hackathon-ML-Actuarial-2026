@@ -18,3 +18,13 @@ Each entry: what was found, who proposed it (AI / Toby), how it was checked, dec
 - BI case-development factors are judgment (no development history in data). Sensitivity: +/-10% on BI moves motor level ~+/-2-3%.
 - Motor frequency fell 2023-24; is this real or a data artefact?
 - 2025 weather is provided per address - check it is "known" at pricing time (forecast vs. realised).
+
+## v1 results (4-fold CV grouped by policy_id)
+| Line | OOF D2 | A/E by year 2021-24 | 2025 calibration | Test pure premium |
+|---|---|---|---|---|
+| Motor | 0.064 | 0.89 / 0.91 / 0.89 / 0.89 | 0.888 | 527 |
+| Buildings | 0.084 | 0.87 / 0.93 / 0.90 / 0.98 | 0.991 | 382 |
+| Contents | 0.082 | 0.87 / 0.82 / 0.87 / 0.91 | 0.917 | 96 |
+
+Observation: raw GBM is ~10% high out-of-fold in every year (consistent, so a calibration not a trend). The year-on-year drift in A/E (+3%/yr buildings, +2% contents, flat motor) is projected to 2025.
+Buildings and contents 2025 levels sit above the multi-year average because the 2025 book and 2025 weather look riskier to the model, consistent with the 2024 level. To review.
