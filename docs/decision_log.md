@@ -65,3 +65,17 @@ Lesson: the first v1 build did not include a data-quality scan; the planted erro
 
 v2 public LB 0.12444 (rank ~26/37; top 0.12996, 25 teams within 0.0055). Solver: v2 optimal multiplier 1.042 (+0.0002 only).
 v3 = v2 with per-line 2025 levels from the Tweedie-optimal A/E trend of v2 OOF vs ultimate-adjusted cost (motor 1.376, buildings 1.159, contents 1.131 on pooled 2021-24 base; `src/level_v3.py`), total anchored to v2 x 1.042. Motor +6%, buildings +3%, contents -1% vs v2. Expected gain small (<0.001). Main residual uncertainty: motor BI case development (1.105 vs 1.376 motor factor with/without).
+
+## Final Part 1 submissions (Oct 22)
+| File | Public LB | What changed |
+|---|---|---|
+| v1 | 0.11107 | Monday baseline (dirty data, per-claim weights, native categoricals) |
+| v2 | 0.12444 | DQ fixes, capped raw target, target encoding, calibration curve |
+| v3 | 0.12399 | per-line levels from A/E trend with BI development (motor too high) |
+| v4 | 0.12618 | per-line levels solved from LB: motor x0.945, home x1.144 vs v2 (predicted 0.1259) |
+| **v5 (selected)** | **0.12698** | exact levels (motor 0.936, bld 1.172, cnt 1.121) + 30% blend with partner's model, level-matched per line |
+Leader 0.12996. Final standings are on the other 67% of test rows.
+
+Per-line solve (`src/lb_lines.py`): with scores for v2, v3, v4 the per-line b_l are exactly identified (3 equations, 3 unknowns; k from v1 probes, c_l from the predictions). Exact optimum predicted 0.12622 for levels alone - level is exhausted; the blend added the rest.
+Interpretation: the home lines needed +12-17% over v2 (consistent with their observed +5-8%/yr pure-premium trend) and motor -6% (the BI case-development judgment overstated 2025 motor). This is the main Week 1 lesson for the write-up: between-line level allocation mattered more than any model change after the DQ fixes.
+Partner's model: two LightGBM-style submissions (0.1195 / 0.1177 at his own level, ~12% below ours), correlation with v2 0.85-0.93 by line. Averaged, level-matched per line, blended at 0.30. Blend weight not tuned (one submission left) - tune in Week 2 with OOF predictions from both pipelines.
