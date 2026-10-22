@@ -15,6 +15,10 @@ cc=cl.merge(cus_map,on='policy_id').groupby(['customer_id','line','ly']).size().
 def build(df,ln):
     df=df.copy()
     df['ps']=pd.to_datetime(df.period_start); df['year']=df.ps.dt.year
+    # DQ fix 1: some training rows carry exposure in days (365, 327...) and rounding variants; recompute from dates
+    df['exposure']=((pd.to_datetime(df.period_end)-df.ps).dt.days+1)/365
+    # DQ fix 2: construction_type has 'T'/'t' variants of 'timber' in training only
+    if 'construction_type' in df: df['construction_type']=df.construction_type.replace({'T':'timber','t':'timber'})
     df['month_start']=df.ps.dt.month
     df=df.merge(cust,on='customer_id',how='left')
     df['cust_age']=(df.ps-df.date_of_birth).dt.days/365.25

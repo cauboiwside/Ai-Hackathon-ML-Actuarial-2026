@@ -10,7 +10,9 @@ P='/home/claude/data_raw/public/'
 PRM=dict(objective='tweedie',tweedie_variance_power=1.5,learning_rate=0.03,num_leaves=31,min_data_in_leaf=500,
          feature_fraction=0.7,bagging_fraction=0.8,bagging_freq=1,lambda_l2=10,cat_smooth=50,min_data_per_group=200,
          cat_l2=10,verbose=-1,num_threads=2,seed=1)
-TE={'motor':['make_model','occupation','region'],'buildings':['occupation','region'],'contents':['occupation','region']}
+# per-line config chosen on 2024 holdout vs raw actuals (docs/decision_log.md #13-14)
+TE={'motor':['make_model','occupation','region'],'buildings':['occupation','region'],'contents':[]}
+HHC={'motor':True,'buildings':False,'contents':False}
 HH=['n_pol_addr','n_cust_addr','n_pol_cust','n_lines_cust']
 lp=json.load(open(W+'level_params.json')); cl=pd.read_parquet(W+'claims_level.parquet')
 pm=pd.concat([pd.read_parquet(P+f+'.parquet',columns=['row_id','policy_id','customer_id','address_id']).assign(l=f[-1])
@@ -28,7 +30,8 @@ for ln in ['motor','buildings','contents']:
     d=hh(pd.read_parquet(W+f'mf_train_{ln}.parquet')); te=hh(pd.read_parquet(W+f'mf_test_{ln}.parquet'))
     j=pd.read_parquet(W+f'claimrows_{ln}.parquet',columns=['claim_id','row_id']).merge(cl,on='claim_id')
     d['target']=d.row_id.map(j.groupby('row_id').cost_c.sum()).fillna(0.0)   # capped raw cost, no per-claim weights
-    X,cats=prep(d.drop(columns=TE[ln])); Xt,_=prep(te.drop(columns=TE[ln]),cats)
+    dropc=TE[ln]+([] if HHC[ln] else HH)
+    X,cats=prep(d.drop(columns=dropc)); Xt,_=prep(te.drop(columns=dropc),cats)
     for c in cats: Xt[c]=pd.Categorical(Xt[c].astype(str),categories=X[c].cat.categories)
     y=d.target.values; off=np.log(d.exposure.values)+np.log(y.sum()/d.exposure.sum())
     folds=list(GroupKFold(4).split(X,y,d.policy_id)); oof=np.zeros(len(d)); its=[]

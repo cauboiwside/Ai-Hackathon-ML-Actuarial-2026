@@ -42,3 +42,12 @@ v1 scored 0.11107 public (33% of test), rank 33/37; top 0.12996.
 | 15 | Tweedie power 1.3 / 1.7, deeper trees, lower LR | AI | Same holdout | No gain; keep p=1.5 (matches metric) and default depth |
 
 Process note: 5 LB submissions/day. Budget: 3 used for level probes (now replaced by the closed-form solver), 1 for v2 probe, 1 for v2 at optimum.
+
+## Data-quality traps (found Oct 22, `src/dq_scan.py`)
+| # | Finding | Found by | Verification | Decision |
+|---|---|---|---|---|
+| 16 | ~900 training rows per line have `exposure` in DAYS (365, 327, 89...) and ~3-5k at 0.99/1.01; test max is 1.0 | AI: OOF A/E by exposure band contradicted overall A/E (impossible unless rows fell outside bands) | Ratio exposure/(days/365) is exactly 365 for those rows | Recompute exposure from period dates for all rows. Impact: 0.4% of rows carried 26% of predicted cost through the log-exposure offset, distorting training and the calibration curve |
+| 17 | `construction_type` has 'T' and 't' levels in training only | AI scan of train-only categorical levels | Test has brick/stone/timber/non-standard only | Map to 'timber' |
+| 18 | 2.5% NaN in vehicle_age, engine_size, mileage, days_unoccupied, high_value_items; 88% NaN telematics_score (not opted in) | AI scan | Same rates in test | Legitimate missingness; left to LightGBM's native NaN handling |
+| 19 | 274 claims with loss date before 2021 | AI scan | Fall outside any policy row | Unmatched, excluded (0.17%) |
+Lesson: the first v1 build did not include a data-quality scan; the planted errors were only caught through a calibration diagnostic that produced an impossible result. Automated DQ checks now run before modelling (`tests/`).
