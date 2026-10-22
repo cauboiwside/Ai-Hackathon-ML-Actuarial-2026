@@ -52,3 +52,16 @@ Process note: 5 LB submissions/day. Budget: 3 used for level probes (now replace
 | 19 | 274 claims with loss date before 2021 | AI scan | Fall outside any policy row | Unmatched, excluded (0.17%) |
 Impact of fixes 16-17 on grouped-CV D2 (capped raw target): motor 0.082->0.091, buildings 0.091->0.100, contents 0.083->0.092; calibration A/E moved from 0.75 to 1.00 (the apparent 'metric wants +33%' was the exposure bug).
 Lesson: the first v1 build did not include a data-quality scan; the planted errors were only caught through a calibration diagnostic that produced an impossible result. Automated DQ checks now run before modelling (`tests/`).
+
+## Round 2 (clean data, 2024 holdout vs raw actuals; `src/experiment2.py`, `src/hist_features.py`)
+| Variant | Motor | Buildings | Contents | Decision |
+|---|---|---|---|---|
+| v2 config | 0.0855 | 0.1144 | 0.0922 | baseline |
+| 3-seed average | 0.0855 | 0.1135 | 0.0917 | no gain |
+| + written_premium | 0.0798 | 0.1125 | 0.0883 | **hurts**; also excluded on principle (circular) |
+| cap 100k | 0.0853 | 0.1125 | 0.0913 | keep 250k/300k/60k |
+| shallower / deeper trees | 0.0834-0.0849 | 0.1091-0.1154 | 0.0879-0.0931 | within noise |
+| + policy/customer/address claim history (1y, 2y), address peril flags, weather anomalies | 0.0852 | 0.1129 | 0.0924 | no gain; past claims add nothing beyond static risk factors in this data |
+
+v2 public LB 0.12444 (rank ~26/37; top 0.12996, 25 teams within 0.0055). Solver: v2 optimal multiplier 1.042 (+0.0002 only).
+v3 = v2 with per-line 2025 levels from the Tweedie-optimal A/E trend of v2 OOF vs ultimate-adjusted cost (motor 1.376, buildings 1.159, contents 1.131 on pooled 2021-24 base; `src/level_v3.py`), total anchored to v2 x 1.042. Motor +6%, buildings +3%, contents -1% vs v2. Expected gain small (<0.001). Main residual uncertainty: motor BI case development (1.105 vs 1.376 motor factor with/without).
