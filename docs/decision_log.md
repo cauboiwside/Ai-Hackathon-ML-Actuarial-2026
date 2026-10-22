@@ -28,3 +28,17 @@ Each entry: what was found, who proposed it (AI / Toby), how it was checked, dec
 
 Observation: raw GBM is ~10% high out-of-fold in every year (consistent, so a calibration not a trend). The year-on-year drift in A/E (+3%/yr buildings, +2% contents, flat motor) is projected to 2025.
 Buildings and contents 2025 levels sit above the multi-year average because the 2025 book and 2025 weather look riskier to the model, consistent with the 2024 level. To review.
+
+## Week 1, day 4 (Oct 22): leaderboard diagnosis and v2
+v1 scored 0.11107 public (33% of test), rank 33/37; top 0.12996.
+
+| # | Finding | Proposed by | Verification | Decision |
+|---|---|---|---|---|
+| 10 | Score is level-sensitive: v1 x0.85 -> 0.0969, x1.15 -> 0.1173 | AI | Two scaled probes on public LB | Fit the closed-form D2(s) curve to the three scores: k,b,c solved exactly; v1 optimum s*=1.259 (D2 0.1185). Any new model needs one LB score to locate its optimum (k is model-independent; c computed from the predictions). `src/lb_calib.py` |
+| 11 | OOF A/E ~0.89 yet deviance-optimal scale >1 => model over-dispersed, over-predicts top deciles 10-15% | AI | Decile calibration on grouped-CV OOF | Calibration curve rate = c*rate^a fitted on OOF by Tweedie deviance. Metric-optimal level sits ~25-33% above the unbiased expected cost: the Tweedie-1.5 score weights rows by mu^-0.5. Submit metric-optimal; pricing tool reports unbiased expected cost separately |
+| 12 | Per-claim IBNR weights (up to 5x) and BI development on individual claims HURT: holdout D2 vs 2024 actuals 0.060 (adjusted target) vs 0.064 (raw capped) | AI experiment | Train 2021-23, score on raw 2024, scale-free best-s D2 | **Reverse decision #2/#3 for the model target.** Train on capped raw cost; apply IBNR/trend/large-loss at the aggregate level after modelling |
+| 13 | OOF target encoding of make_model/occupation/region, replacing native categoricals: motor 0.064 -> 0.074 | AI (Deotte writeup) | Same holdout | Adopt. Native LightGBM categorical on 300 levels was overfitting |
+| 14 | Household counts (policies per address/customer, lines per customer) | AI | Same holdout | +0.001, keep (cheap, interpretable: multi-car / multi-line households) |
+| 15 | Tweedie power 1.3 / 1.7, deeper trees, lower LR | AI | Same holdout | No gain; keep p=1.5 (matches metric) and default depth |
+
+Process note: 5 LB submissions/day. Budget: 3 used for level probes (now replaced by the closed-form solver), 1 for v2 probe, 1 for v2 at optimum.
