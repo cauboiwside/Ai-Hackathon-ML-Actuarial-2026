@@ -18,7 +18,10 @@ def build(df,ln):
     # DQ fix 1: some training rows carry exposure in days (365, 327...) and rounding variants; recompute from dates
     df['exposure']=((pd.to_datetime(df.period_end)-df.ps).dt.days+1)/365
     # DQ fix 2: construction_type has 'T'/'t' variants of 'timber' in training only
-    if 'construction_type' in df: df['construction_type']=df.construction_type.replace({'T':'timber','t':'timber'})
+    # DQ fix 2: construction_type is case-scrambled and uses W/T abbreviations for timber (dictionary: brick, stone, timber, non-standard)
+    if 'construction_type' in df:
+        df['construction_type']=df.construction_type.str.strip().str.lower().replace({'w':'timber','t':'timber'})
+        assert set(df.construction_type.dropna())<= {'brick','stone','timber','non_standard'}, df.construction_type.unique()
     df['month_start']=df.ps.dt.month
     df=df.merge(cust,on='customer_id',how='left')
     df['cust_age']=(df.ps-df.date_of_birth).dt.days/365.25
