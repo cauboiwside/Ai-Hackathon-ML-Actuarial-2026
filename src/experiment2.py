@@ -36,12 +36,25 @@ def run(name,target='t_cap',extra=[],params={},te=TE,seeds=[1]):
     y=d[target].values; off=np.log(d.exposure.values)+np.log(y[tr].sum()/d.exposure[tr].sum()); mu=np.zeros(va.sum())
     for sd in seeds:
         prm={**BASE,**params,'seed':sd}
-        ds=lgb.Dataset(X[tr],y[tr],init_score=off[tr],categorical_feature=cats); dv=lgb.Dataset(X[va],y[va],init_score=off[va],categorical_feature=cats,reference=ds)
+        wt=None
+        if os.environ.get('RECENCY'): wt=(1+float(os.environ['RECENCY']))**(d.year[tr].values-2023)
+        ds=lgb.Dataset(X[tr],y[tr],init_score=off[tr],weight=wt,categorical_feature=cats); dv=lgb.Dataset(X[va],y[va],init_score=off[va],categorical_feature=cats,reference=ds)
         m=lgb.train(prm,ds,4000,valid_sets=[dv],callbacks=[lgb.early_stopping(150,verbose=False)])
         mu+=np.exp(m.predict(X[va],raw_score=True)+off[va])/len(seeds)
     yr=d.raw[va].values; best=max((d2(yr,mu*s),s) for s in np.arange(0.6,1.5,0.025))
     print(f'{LN} {name:34s} it={m.best_iteration:4d} best D2={best[0]:.4f} @s={best[1]:.3f} {time.time()-t0:.0f}s',flush=True)
 hh=HH if useHH else []
+if os.environ.get('R3'):
+    # round 3: exposure/period features, recency weighting, interaction target encodings
+    d['pe_month']=pd.to_datetime(pd.read_parquet(P+f'policies_{LN}.parquet',columns=['row_id','period_end']).set_index('row_id').period_end.reindex(d.row_id).values).month
+    d['full_year']=(d.exposure>0.99).astype(int); d['expo_f']=d.exposure
+    d['reg_urb']=d.region.astype(str)+'_'+d.urban_density.astype(str)
+    EXTRA+=['pe_month','full_year','expo_f','reg_urb']
+    run('v2 config',extra=hh)
+    run('+ exposure as feature',extra=hh+['expo_f','full_year'])
+    run('+ exposure + end month',extra=hh+['expo_f','full_year','pe_month'])
+    run('+ TE region_x_urban',extra=hh,te=TE+['reg_urb'])
+    sys.exit()
 if os.environ.get('HIST'):
     HC=[c for c in d.columns if '_prev' in c or c.endswith('_anom')]
     run('v2 config (no hist)',extra=hh,params={}) if False else None

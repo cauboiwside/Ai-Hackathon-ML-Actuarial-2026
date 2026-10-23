@@ -79,3 +79,11 @@ Leader 0.12996. Final standings are on the other 67% of test rows.
 Per-line solve (`src/lb_lines.py`): with scores for v2, v3, v4 the per-line b_l are exactly identified (3 equations, 3 unknowns; k from v1 probes, c_l from the predictions). Exact optimum predicted 0.12622 for levels alone - level is exhausted; the blend added the rest.
 Interpretation: the home lines needed +12-17% over v2 (consistent with their observed +5-8%/yr pure-premium trend) and motor -6% (the BI case-development judgment overstated 2025 motor). This is the main Week 1 lesson for the write-up: between-line level allocation mattered more than any model change after the DQ fixes.
 Partner's model: two LightGBM-style submissions (0.1195 / 0.1177 at his own level, ~12% below ours), correlation with v2 0.85-0.93 by line. Averaged, level-matched per line, blended at 0.30. Blend weight not tuned (one submission left) - tune in Week 2 with OOF predictions from both pipelines.
+
+## Oct 23 (quota reset: 10 more submissions)
+| File | Public LB | What |
+|---|---|---|
+| v6 | 0.12662 | 50% partner blend probe -> fitted optimum w=0.30 (v5 already optimal) |
+| **v7 (selected)** | **0.12841** | second in-house model: frequency (Poisson) x severity (Gamma) GBM, same features/folds; OOF D2 beats Tweedie in every line (motor 0.094 vs 0.091, bld 0.102 vs 0.100, cnt 0.095 vs 0.092); ours = 50/50 Tweedie+freq-sev level-matched per line; then 70/30 with partner |
+Leader 0.12996 (gap 0.0016). Freq-sev vs Tweedie correlation 0.95-0.97 by line.
+Decision #26: freq-sev adopted as co-primary model. Rationale: two-part model isolates large-claim influence to the severity component; frequency model trained on all rows converges over ~1000 iterations vs ~200 for Tweedie. Also the pricing-team-friendly form (frequency/severity relativities).
