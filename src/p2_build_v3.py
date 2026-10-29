@@ -6,8 +6,8 @@ def build(mult, out, weights_file='stack_p2_v3.json'):
     st=json.load(open(W2+weights_file)); v1=pd.read_csv(W2+'p2_submission_v1.csv',dtype={'row_id':str}).set_index('row_id').prediction
     parts=[]
     for ln,L in [('motor','M'),('buildings','B'),('contents','C')]:
-        p=pd.read_parquet(W2+f'pred_{ln}.parquet'); o=pd.read_parquet(W2+f'oof_{ln}.parquet'); w=st[ln]['w']
-        comps=[p[c].values*o.y.sum()/o[c].sum() for c in ['T','L','O','P']]
+        p=pd.read_parquet(W2+f'pred_{ln}.parquet'); o=pd.read_parquet(W2+f'oof_{ln}.parquet'); w=st[ln]['w']; names=st[ln].get('names',['T','L','O','P'])
+        comps=[p[c].values*o.y.sum()/o[c].sum() for c in names]
         b=sum(wi*c for wi,c in zip(w,comps)); b=pd.Series(b,index=p.row_id.values)
         for seg,m in [(True,mult[L+'NB']),(False,mult[L+'REN'])]:
             idx=p.row_id[p.new_business.values==seg].values
