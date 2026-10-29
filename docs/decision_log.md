@@ -87,3 +87,37 @@ Partner's model: two LightGBM-style submissions (0.1195 / 0.1177 at his own leve
 | **v7 (selected)** | **0.12841** | second in-house model: frequency (Poisson) x severity (Gamma) GBM, same features/folds; OOF D2 beats Tweedie in every line (motor 0.094 vs 0.091, bld 0.102 vs 0.100, cnt 0.095 vs 0.092); ours = 50/50 Tweedie+freq-sev level-matched per line; then 70/30 with partner |
 Leader 0.12996 (gap 0.0016). Freq-sev vs Tweedie correlation 0.95-0.97 by line.
 Decision #26: freq-sev adopted as co-primary model. Rationale: two-part model isolates large-claim influence to the severity component; frequency model trained on all rows converges over ~1000 iterations vs ~200 for Tweedie. Also the pricing-team-friendly form (frequency/severity relativities).
+
+# Part 2: emerging market (Oct 29)
+## Data and DQ (`src/p2_dq.py`, `src/p2_prep.py`)
+| # | Finding | Found by | Verification | Decision |
+|---|---|---|---|---|
+| P1 | Exposure-in-days rows again (~50/line) | DQ scan (now run first) | ratio exposure/(days/365)=365 | recompute from dates |
+| P2 | construction_type recoded BRK/MIX/STN/WOD | DQ scan | dictionary has brick/stone/timber/non-standard | map; MIX -> non_standard |
+| P3 | occupation values carry trailing spaces | DQ scan (case/strip check) | 80 levels, all with trailing space | strip (needed for any cross-market encoding) |
+| P4 | regions E01-E06, no overlap with R01-R12 | schema compare | - | region dropped from transfer model; kept in local/pooled |
+| P5 | features missing vs developed: credit_band, date_of_birth (banded ages instead), annual_mileage, telematics | schema compare | - | transfer model trained on the common feature set, developed ages banded to match |
+| P6 | ~12% NA across many customer/address/policy fields | schema compare | same in test | native NaN handling |
+| P7 | new column `gender` (regulation differs) | schema compare | OOF D2 with/without: motor +0.0002, bld -0.002, cnt +0.001 | **excluded** on governance grounds; cost measured as ~0 |
+| P8 | test book is 76% new business vs 14% in train | distribution compare | - | explicit NB uplift (credibility-weighted local vs developed), then LB segment solve |
+| P9 | customer_service_contacts leak present in train (OOF D2 0.57-0.61) | feature test | test distribution == train no-claim rows (0.67/0.27/0.054/0.007) => scrubbed | excluded; using it would predict 0 for 67% of rows |
+| P10 | 2025 weather milder than 2023-24; market far hailier than developed (14-17 vs 6 hail days) | weather compare | - | no catastrophe adjustment; pooled model sees full hail range |
+| P11 | expenses table (fixed 85 CU, variable 15%, broker commission 20%) and 20 reference policies | new files | - | used in the pricing tool / technical premium section, not in the model |
+
+## Models (`src/p2_train.py`, `src/p2_pooled.py`)
+T transfer (developed, common features) / L local (2 yrs) / O offset = local deviations from T (credibility) / P pooled both markets with market flag, emerging weight 5, developed TE priors for make_model & occupation. GroupKFold(5) on emerging rows.
+| Line | T | L | O | P | best blend (OOF D2) |
+|---|---|---|---|---|---|
+| motor | 0.044 | 0.044 | 0.044 | 0.054 | L.11/O.39/P.50 = 0.058 |
+| buildings | 0.100 | 0.048 | 0.107 | 0.074 | O.94/L.06 = 0.107 |
+| contents | 0.095 | 0.072 | 0.098 | 0.095 | O.56/P.44 = 0.104 |
+Autocalibration (isotonic, cross-fit) tested per Denuit-Charpentier-Trufin: rejected, local data too thin (decile A/E 0.5-1.4 noise).
+
+## Leaderboard
+| Sub | Score | What |
+|---|---|---|
+| v1 | 0.13787 | blend T/L/O, NB uplift 1.23/1.00/1.19, pooled level |
+| x1.35 / NB x1.3 / REN x1.3 | 0.14409 / 0.14492 / 0.13767 | segment probes -> NB x1.282, REN x1.125 (exact) |
+| v2 (+motor x1.2) | 0.14551 | per-line probe -> motor x1.105, home x0.882 |
+| **v3** | **0.14864** | 4-model blends + exact line/segment levels |
+Leader 0.17556. Remaining gap attributed to motor ranking quality (no mileage/exact age/telematics in this market) and unresolved B-vs-C and NB-per-line levels (probes pending).
