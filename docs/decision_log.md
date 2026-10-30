@@ -133,3 +133,11 @@ Leader 0.17556. Remaining gap attributed to motor ranking quality (no mileage/ex
 | **v8 (selected)** | **0.16162** | exact 4-segment solve from the four v6-based scores, no assumptions: motor NB x0.952, motor REN x1.099, buildings x1.044, contents x0.847. Predicted 0.16155 |
 Leader 0.1756; top 10 ~0.163. Solo entry (team dissolved Oct 29).
 Lessons: (1) the level solve is reliable only when fully identified; every partially-identified attempt (Part 1 v3, Part 2 v7) lost; (2) developed-market priors in frequency-severity form are the single most valuable transfer; (3) the new-business uplift from two years of thin local data was over-estimated for motor and under-estimated for renewals.
+
+## Part 2 close-out (Oct 30)
+| Sub | Score | What |
+|---|---|---|
+| v9 | 0.16121 | per-peril level-transfer prior T4/O4 (re-levels each peril to local 2023-24 experience). Best single model on OOF; LOST on LB: pulls the prior toward renewal-heavy local history while the test book is new business |
+| v10 | 0.16161 | v8 with 25 points of blend weight shifted to pure developed priors: identical to v8 => blend at a flat optimum |
+| tuning | - | claim history (none), hyperparameter grid (+-0.0005), Tweedie power 1.3/1.7 (+-0.0005): all noise-level |
+**Final: v8 = 0.16162.** Model family saturated: levels exactly solved, blend on a plateau, priors and local models all represented. Leaders at 0.167-0.176 have a structural element not identified here; logged as an open question.
