@@ -121,3 +121,15 @@ Autocalibration (isotonic, cross-fit) tested per Denuit-Charpentier-Trufin: reje
 | v2 (+motor x1.2) | 0.14551 | per-line probe -> motor x1.105, home x0.882 |
 | **v3** | **0.14864** | 4-model blends + exact line/segment levels |
 Leader 0.17556. Remaining gap attributed to motor ranking quality (no mileage/exact age/telematics in this market) and unresolved B-vs-C and NB-per-line levels (probes pending).
+
+## Part 2, day 2 (Oct 29-30): transfer priors and exact segment levels
+| Sub | Score | What |
+|---|---|---|
+| v4 | (not submitted) | freq-sev transfer prior T2 + offset O2 + pooled 3-seed, 8-model stack |
+| v5 | 0.16036 | + per-peril transfer prior T3 + offset O3, 10-model stack. OOF +0.004/line; LB +0.012: transfer priors generalise to the 76%-new-business test book better than to the renewal-heavy validation folds |
+| v6 | 0.16062 | + pooled freq-sev PF2 (best single model on motor 0.061 and contents 0.107), 11-model stack |
+| probes on v6 | bld x1.15: 0.16035; motor-NB x1.15: 0.15857 | |
+| v7 | 0.15999 | tempered levels under a shared-home-line assumption: WRONG (assumption pushed error onto motor renewals) |
+| **v8 (selected)** | **0.16162** | exact 4-segment solve from the four v6-based scores, no assumptions: motor NB x0.952, motor REN x1.099, buildings x1.044, contents x0.847. Predicted 0.16155 |
+Leader 0.1756; top 10 ~0.163. Solo entry (team dissolved Oct 29).
+Lessons: (1) the level solve is reliable only when fully identified; every partially-identified attempt (Part 1 v3, Part 2 v7) lost; (2) developed-market priors in frequency-severity form are the single most valuable transfer; (3) the new-business uplift from two years of thin local data was over-estimated for motor and under-estimated for renewals.
