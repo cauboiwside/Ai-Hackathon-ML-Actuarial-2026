@@ -1,7 +1,7 @@
 # Actuarial Pricing Across Markets with AI Assistance
 
 **Team:** Toby Nguyen (solo)
-**Repository:** [GITHUB URL]  **Part 1 public LB:** 0.1294 (8th of 37, team entry; the file submitted here is the solo version of the same pipeline, est. 0.1286)  **Part 2 public LB:** 0.1616 (solo; from 0.1379 and 28th of 34 on the first submission)
+**Repository:** [GITHUB URL]  **Part 1 public LB:** 0.1294 (8th of 37, team entry; the file submitted here is the solo version of the same pipeline, est. 0.1286)  **Part 2 public LB:** 0.1618 (solo; from 0.1379 and 28th of 34 on the first submission)
 
 ## 1. Approach
 
@@ -39,7 +39,7 @@ What we carried over, and how. Four candidate models per line, all validated wit
 | Pooled (P, PF2) | both markets together with a market flag and developed-market encodings as priors; Tweedie and frequency × severity | 0.057 / 0.061 | 0.085 / 0.094 | 0.102 / 0.107 |
 | **Blend** | weights fitted on held-out data | **0.063** | **0.112** | **0.110** |
 
-**GLM benchmark.** A Tweedie log-link GLM (one-hot factors, developed-market encodings for vehicle model and occupation, the transfer prior as a credibility term, ridge penalty) scores 0.044 / 0.013 / 0.081 on the same folds. It is the explainable baseline and its effects read as a rating table should (motor: 17–24 band +42%, comprehensive cover +25%, direct channel −27%). The gap to the tree models is largest on buildings, where the risk is driven by flood-zone × elevation × rainfall interactions that a main-effects GLM cannot express. It enters the final blend only for contents (weight 0.14).
+**GLM benchmark.** A Tweedie log-link GLM (one-hot factors, developed-market encodings for vehicle model and occupation, the transfer prior as a credibility term, ridge penalty) scores 0.044 / 0.013 / 0.081 on the same folds. It is the explainable baseline and its effects read as a rating table should (motor: 17–24 band +42%, comprehensive cover +25%, direct channel −27%). The gap to the tree models is largest on buildings, where the risk is driven by flood-zone × elevation × rainfall interactions that a main-effects GLM cannot express. It enters the final blend only for contents (weight 0.14), where it was worth +0.0001 on the leaderboard.
 
 Three things stood out. The developed-market prior is worth twice the local data on the home lines, and the credibility (offset) form is the best single model there. The *frequency × severity* form of the prior transfers far better than the single Tweedie model (motor 0.059 vs 0.044): frequency relativities travel across markets, severity levels do not, and the two-part structure keeps them separate. On the leaderboard that one change was worth +0.012, three times its held-out gain, because the 2025 test book is new business and the developed-market priors describe it better than two years of mostly-renewal local history do. Motor remains the hardest line here because its strongest rating factors are missing. We tested autocalibration (Denuit, Charpentier & Trufin, 2021) and rejected it: with this little data the decile actual-to-expected ratios are noise.
 

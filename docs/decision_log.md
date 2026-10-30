@@ -141,3 +141,4 @@ Lessons: (1) the level solve is reliable only when fully identified; every parti
 | v10 | 0.16161 | v8 with 25 points of blend weight shifted to pure developed priors: identical to v8 => blend at a flat optimum |
 | tuning | - | claim history (none), hyperparameter grid (+-0.0005), Tweedie power 1.3/1.7 (+-0.0005): all noise-level |
 **Final: v8 = 0.16162.** Model family saturated: levels exactly solved, blend on a plateau, priors and local models all represented. Leaders at 0.167-0.176 have a structural element not identified here; logged as an open question.
+| v11 | **0.16176 (selected)** | GLM (explainable benchmark: 0.044/0.013/0.081 OOF) added to the contents blend at weight 0.14. Motor/buildings GLM weight 0 |
