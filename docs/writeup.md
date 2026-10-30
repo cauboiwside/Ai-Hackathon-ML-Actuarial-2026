@@ -1,7 +1,7 @@
 # Actuarial Pricing Across Markets with AI Assistance
 
 **Team:** Toby Nguyen (solo)
-**Repository:** [GITHUB URL]  **Part 1 public LB:** 0.1294 (8th of 37, team entry; the file submitted here is the solo version of the same pipeline, est. 0.1286)  **Part 2 public LB:** 0.1618 (solo; from 0.1379 and 28th of 34 on the first submission)
+**Repository:** [GITHUB URL]  **Part 1 public LB:** 0.1294 (8th of 37, team entry; the file submitted here is the solo version of the same pipeline, est. 0.1286)  **Part 2 public LB:** 0.1624 (solo; from 0.1379 and 28th of 34 on the first submission)
 
 ## 1. Approach
 

@@ -145,3 +145,7 @@ Lessons: (1) the level solve is reliable only when fully identified; every parti
 | v12 | (pending) | credibility-per-peril model OP (local Poisson per peril on the developed per-peril prior): motor 0.061 single, +0.0004 in stack; 0 weight on home lines |
 | NB-weighted prior | rejected | freq-sev prior trained on developed data with new-business x8: WORSE on local new-business rows in every line (motor -0.02 vs +0.006). The transfer gain is general relativities, not a new-business pattern |
 | region probes | prepared, not used | E03/E06/E02 x1.1 on v12; public-LB tuning, disclosed if used |
+| v12 | 0.16130 | credibility-per-peril model in motor stack: LOST (third per-peril local adjustment to lose on LB) |
+| **v13 (selected)** | **0.16243** | region x line level correction from OOF A/E, credibility K=3000, segment totals preserved. Cross-fit check afterwards: region-only correction is slightly NEGATIVE on local data at all K; the LB gain (+0.0007) is ~2 sigma of public-sample noise and may not hold on the private set |
+| v14 | not submitted | 10-factor balance correction: in-sample OOF +0.006/+0.030/+0.008 but cross-fit -0.012/-0.062/-0.017: pure overfit. Deleted. The cross-fit check is the guardrail that caught it |
+| NB-row feature tests | - | written_premium, broker price ratio, previous_insurer, campaign, segment, email on new-business rows: <= +0.0005. No hidden feature |

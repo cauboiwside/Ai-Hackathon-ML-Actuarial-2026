@@ -13,4 +13,4 @@ Part 2 (`src/p2_*.py`): `p2_dq.py` · `p2_prep.py` (emerging frames + developed 
 Tests: `pytest tests/` (submission format, exposure in years, categorical consistency, level sanity).
 
 ## Final files
-`work/submission_part1_final_solo.csv` (Part 1), `work_p2/p2_submission_v12.csv` (Part 2). Data is not in the repo (Kaggle licence); place the Part 1 parquet files in `/home/claude/data_raw/public/` and the Part 2 `emerging/` folder in `/home/claude/data_p2/` to reproduce.
+`work/submission_part1_final_solo.csv` (Part 1), `work_p2/p2_submission_v13.csv` (Part 2). Data is not in the repo (Kaggle licence); place the Part 1 parquet files in `/home/claude/data_raw/public/` and the Part 2 `emerging/` folder in `/home/claude/data_p2/` to reproduce.
