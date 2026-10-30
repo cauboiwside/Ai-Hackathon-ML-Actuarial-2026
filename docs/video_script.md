@@ -4,9 +4,9 @@ Format: screen recording. Show the thing named in [brackets]; speak the text. Sp
 
 ---
 
-**[0:00 — title slide: team name, both names, "Actuarial pricing across markets with AI assistance"]**
+**[0:00 — title slide: Toby Nguyen, "Actuarial pricing across markets with AI assistance"]**
 
-Hi, I'm Toby, and this is [PARTNER]. We priced motor, buildings and contents for a developed market, then adapted the approach to an emerging market with two years of history. I'll cover four things: how the model works, where AI helped and where we had to catch it, what changed for the new market, and the guardrails.
+Hi, I'm Toby. I priced motor, buildings and contents for a developed market, then adapted the approach to an emerging market with two years of history. I'll cover four things: how the model works, where AI helped and where we had to catch it, what changed for the new market, and the guardrails.
 
 **[0:25 — repo README / pipeline diagram: scan → target → models → validation → level → tests]**
 
@@ -36,9 +36,9 @@ Part 2. The new market had five percent of the data, no credit band, no mileage,
 
 We didn't start from scratch. We tested four ways to use the developed market: transfer the model and re-level it; train local only; train the local model on *deviations* from the transferred prior, which is credibility weighting; and pool both markets with a market flag. On the home lines the developed prior was worth twice the local data. The best transfer turned out to be the frequency-severity model: frequency relativities travel across markets, severity levels don't, and that structure keeps them apart.
 
-**[3:25 — new-business A/E table]**
+**[3:25 — new-business A/E table, then the reference-policy pricing table]**
 
-The biggest single risk was new business. Locally it cost about one and a half times renewals, on very thin exposure. We applied a credibility-weighted uplift and reported it as the main uncertainty in the price.
+The biggest single risk was new business. Locally it cost about one and a half times renewals, on very thin exposure. We applied a credibility-weighted uplift and reported it as the main uncertainty in the price. And when the pricing tool turned risk premiums into technical premiums with the expense table, the answer was blunt: at current prices the broker book is unprofitable. The loadings eat half of every premium, and the fixed expense alone is more than a contents policy's expected claims.
 
 **[3:45 — gender paragraph in the write-up]**
 
@@ -50,6 +50,6 @@ Guardrails. Seven automated tests on every submission: format, every row once, n
 
 **[4:30 — results slide: Part 1 0.1111 → 0.1294, 8th of 37; Part 2 {final}]**
 
-Results: Part 1 went from thirty-third to eighth. Part 2 is {rank} on the public board. What we'd want before using this for real: development history for bodily injury, a year of actual emerging-market experience to settle the new-business level, and real persistence in claims, which this synthetic data doesn't have. Thanks.
+Results: Part 1 went from thirty-third to eighth. Part 2 went from twenty-eighth to {rank} in two days, almost all of it from transferring frequency-severity relativities and solving the levels exactly. What we'd want before using this for real: development history for bodily injury, a year of actual emerging-market experience to settle the new-business level, and real persistence in claims, which this synthetic data doesn't have. Thanks.
 
 **[4:45 — end]**
