@@ -1,5 +1,11 @@
+import os
+from pathlib import Path
+
 import numpy as np, pandas as pd
-W='/home/claude/iaa-pricing/work/'
+
+# Keep the separator required by the original string-concatenation API. This
+# setting affects only scripts that import W; see docs/REPRODUCING.md.
+W = str(Path(os.environ.get('IAA_WORK_DIR', Path(__file__).resolve().parents[1] / 'work')).expanduser().resolve()) + os.sep
 ID=['row_id','policy_id','customer_id','address_id','target','renewal_decision','year','exposure']
 # Excluded on governance grounds (see docs/feature_decisions.md):
 #  customer_service_contacts - recorded during the period, driven by claims (target leakage)

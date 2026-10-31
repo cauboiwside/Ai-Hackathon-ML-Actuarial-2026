@@ -1,3 +1,14 @@
 work/
 __pycache__/
 *.parquet
+.DS_Store
+.pytest_cache/
+.venv/
+venv/
+.env
+.env.*
+*.pem
+*.key
+*.pyc
+data_raw/
+data_p2/

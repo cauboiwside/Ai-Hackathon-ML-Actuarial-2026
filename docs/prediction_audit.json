@@ -1,0 +1,540 @@
+{
+  "audited_at_america_chicago": "2026-10-30T21:34:25.096609-05:00",
+  "scope": "Read-only audit of the two user-selected CSVs and their existing repository copies against locally supplied sample submissions and test files. Predictions were not modified or retrained.",
+  "parts": {
+    "part1": {
+      "file": "/Users/nghiatranyeuem/Downloads/submission_v14.csv",
+      "bytes": 17756401,
+      "sha256": "6047189045f6746a79f3b22b1be757741245261566bd0bf17363fd42047878b5",
+      "columns": [
+        "row_id",
+        "prediction"
+      ],
+      "dtypes": {
+        "row_id": "str",
+        "prediction": "float64"
+      },
+      "rows": 626639,
+      "unique_ids": 626639,
+      "duplicate_id_rows": 0,
+      "duplicate_full_rows": 0,
+      "missing_by_column": {
+        "row_id": 0,
+        "prediction": 0
+      },
+      "nonnumeric_predictions": 0,
+      "infinite_predictions": 0,
+      "negative_predictions": 0,
+      "zero_predictions": 0,
+      "sample_reference": "/Users/nghiatranyeuem/Downloads/public/sample_submission.parquet",
+      "sample_sha256": "9529f3b6a679d3410350baa7c2ef3fb085d1d8843a838360c5852dfe820d4d95",
+      "sample_rows": 626639,
+      "missing_sample_ids": 0,
+      "extra_sample_ids": 0,
+      "test_rows": 626639,
+      "missing_test_ids": 0,
+      "extra_test_ids": 0,
+      "test_reference_quality": {
+        "motor": {
+          "test_rows": 254986,
+          "test_unique_ids": true,
+          "raw_exposure_greater_than_1_005": 0,
+          "raw_exposure_nonpositive": 0,
+          "raw_exposure_missing": 0,
+          "date_derived_exposure_min": 0.0027397260273972603,
+          "date_derived_exposure_max": 1.0,
+          "date_derived_exposure_years_sum": 199983.58082191783,
+          "raw_exposure_differs_from_date_derived_over_1e_6": 103216,
+          "raw_exposure_maximum_absolute_difference_from_dates": 4.931506849320533e-05,
+          "raw_exposure_differs_from_date_derived_over_1e_4": 0,
+          "new_business_count": 38878,
+          "new_business_share": 0.15247111606127395,
+          "period_start_years": [
+            2025
+          ]
+        },
+        "buildings": {
+          "test_rows": 184155,
+          "test_unique_ids": true,
+          "raw_exposure_greater_than_1_005": 0,
+          "raw_exposure_nonpositive": 0,
+          "raw_exposure_missing": 0,
+          "date_derived_exposure_min": 0.0027397260273972603,
+          "date_derived_exposure_max": 1.0,
+          "date_derived_exposure_years_sum": 150243.90410958906,
+          "raw_exposure_differs_from_date_derived_over_1e_6": 65191,
+          "raw_exposure_maximum_absolute_difference_from_dates": 4.931506849320533e-05,
+          "raw_exposure_differs_from_date_derived_over_1e_4": 0,
+          "new_business_count": 27891,
+          "new_business_share": 0.1514539382585322,
+          "period_start_years": [
+            2025
+          ]
+        },
+        "contents": {
+          "test_rows": 187498,
+          "test_unique_ids": true,
+          "raw_exposure_greater_than_1_005": 0,
+          "raw_exposure_nonpositive": 0,
+          "raw_exposure_missing": 0,
+          "date_derived_exposure_min": 0.0027397260273972603,
+          "date_derived_exposure_max": 1.0,
+          "date_derived_exposure_years_sum": 150123.7698630137,
+          "raw_exposure_differs_from_date_derived_over_1e_6": 70980,
+          "raw_exposure_maximum_absolute_difference_from_dates": 4.931506849320533e-05,
+          "raw_exposure_differs_from_date_derived_over_1e_4": 0,
+          "new_business_count": 28428,
+          "new_business_share": 0.15161761725458406,
+          "period_start_years": [
+            2025
+          ]
+        }
+      },
+      "repository_copy": "/Users/nghiatranyeuem/Downloads/iaa-pricing/final_submissions/part1_prediction_file.csv",
+      "repository_copy_sha256": "6047189045f6746a79f3b22b1be757741245261566bd0bf17363fd42047878b5",
+      "repository_copy_rows": 626639,
+      "repository_comparison": {
+        "same_id_set": true,
+        "same_id_order": true,
+        "differing_prediction_values": 0,
+        "mean_absolute_prediction_difference": 0.0,
+        "maximum_absolute_prediction_difference": 0.0,
+        "prediction_pearson_correlation": 0.9999999999999999,
+        "selected_prediction_total": 218036936.8850156,
+        "repository_prediction_total": 218036936.8850156,
+        "repository_prediction_min": 0.0863378360132721,
+        "repository_prediction_max": 21711.295199109332
+      },
+      "overall_prediction_distribution": {
+        "count": 626639,
+        "sum": 218036936.8850156,
+        "mean": 347.94664373748776,
+        "std_population": 373.9746648809957,
+        "min": 0.0863378360132721,
+        "p01": 4.962950026164371,
+        "p05": 25.338037200682063,
+        "p50": 266.38160521081716,
+        "p95": 943.7620235539667,
+        "p99": 1814.8826829739005,
+        "max": 21711.295199109332
+      },
+      "by_line": {
+        "motor": {
+          "count": 254986,
+          "sum": 116192859.39402285,
+          "mean": 455.6832900395428,
+          "std_population": 364.70636568264854,
+          "min": 0.4499225722170704,
+          "p01": 9.359036680416745,
+          "p05": 48.03871299124856,
+          "p50": 384.59435846527845,
+          "p95": 1094.260324480761,
+          "p99": 1855.5817790623405,
+          "max": 7527.822821789393,
+          "exposure_years_sum": 199983.58082191783,
+          "aggregate_predicted_cost_per_exposure_year": 581.0119956672379,
+          "max_divided_by_line_mean": 16.51985707252103,
+          "rows_at_or_above_100_times_line_mean": 0,
+          "new_business_share": 0.15247111606127395,
+          "segments": {
+            "renewal": {
+              "rows": 216108,
+              "prediction_sum": 101333475.933539,
+              "exposure_years": 181949.9589041096,
+              "aggregate_predicted_cost_per_exposure_year": 556.9304689260374
+            },
+            "new_business": {
+              "rows": 38878,
+              "prediction_sum": 14859383.460483856,
+              "exposure_years": 18033.621917808217,
+              "aggregate_predicted_cost_per_exposure_year": 823.9821999268046
+            }
+          }
+        },
+        "buildings": {
+          "count": 184155,
+          "sum": 80843627.71705416,
+          "mean": 438.99773406670556,
+          "std_population": 444.9953681663644,
+          "min": 0.4778997033614596,
+          "p01": 9.791137829369665,
+          "p05": 49.60467299365268,
+          "p50": 347.88103031851665,
+          "p95": 1077.7288048890398,
+          "p99": 2387.438005078432,
+          "max": 21711.295199109332,
+          "exposure_years_sum": 150243.90410958906,
+          "aggregate_predicted_cost_per_exposure_year": 538.0825810948456,
+          "max_divided_by_line_mean": 49.456508574621274,
+          "rows_at_or_above_100_times_line_mean": 0,
+          "new_business_share": 0.1514539382585322,
+          "segments": {
+            "renewal": {
+              "rows": 156264,
+              "prediction_sum": 73478919.35284509,
+              "exposure_years": 136681.08493150683,
+              "aggregate_predicted_cost_per_exposure_year": 537.5939135226107
+            },
+            "new_business": {
+              "rows": 27891,
+              "prediction_sum": 7364708.364209085,
+              "exposure_years": 13562.819178082193,
+              "aggregate_predicted_cost_per_exposure_year": 543.007192495098
+            }
+          }
+        },
+        "contents": {
+          "count": 187498,
+          "sum": 21000449.77393856,
+          "mean": 112.0035934993363,
+          "std_population": 111.55334791332179,
+          "min": 0.0863378360132721,
+          "p01": 2.269850339860801,
+          "p05": 11.758611399557628,
+          "p50": 89.55526123346101,
+          "p95": 269.8351820634797,
+          "p99": 561.1626292733018,
+          "max": 3082.2768763378226,
+          "exposure_years_sum": 150123.7698630137,
+          "aggregate_predicted_cost_per_exposure_year": 139.88757272150332,
+          "max_divided_by_line_mean": 27.51944629665911,
+          "rows_at_or_above_100_times_line_mean": 0,
+          "new_business_share": 0.15161761725458406,
+          "segments": {
+            "renewal": {
+              "rows": 159070,
+              "prediction_sum": 19073539.60498109,
+              "exposure_years": 136579.09315068493,
+              "aggregate_predicted_cost_per_exposure_year": 139.65197135946454
+            },
+            "new_business": {
+              "rows": 28428,
+              "prediction_sum": 1926910.1689574686,
+              "exposure_years": 13544.676712328768,
+              "aggregate_predicted_cost_per_exposure_year": 142.26328246015186
+            }
+          }
+        }
+      },
+      "checks": {
+        "exact_expected_columns": true,
+        "unique_column_headers": true,
+        "all_records_have_two_fields": true,
+        "nonempty_file": true,
+        "unique_ids": true,
+        "no_missing_ids": true,
+        "no_blank_or_whitespace_ids": true,
+        "no_leading_trailing_id_whitespace": true,
+        "predictions_numeric": true,
+        "predictions_finite": true,
+        "predictions_nonnegative": true,
+        "row_count_matches_sample": true,
+        "id_set_matches_sample": true,
+        "id_order_matches_sample": true,
+        "id_set_matches_test_files": true,
+        "id_order_matches_concatenated_test_motor_buildings_contents": true,
+        "reference_sample_unique_ids": true,
+        "reference_test_files_unique_combined_ids": true,
+        "all_rows_below_100_times_own_line_mean": true,
+        "repository_copy_byte_identical": true,
+        "repository_copy_data_identical_in_order": true
+      },
+      "structural_result": "PASS"
+    },
+    "part2": {
+      "file": "/Users/nghiatranyeuem/Downloads/p2_submission_v17_FINAL.csv",
+      "bytes": 5902939,
+      "sha256": "8e068da53ff159aaba2182383b7212b6b78bbd834b9b613cc1f80f271b9bee9b",
+      "columns": [
+        "row_id",
+        "prediction"
+      ],
+      "dtypes": {
+        "row_id": "str",
+        "prediction": "float64"
+      },
+      "rows": 209063,
+      "unique_ids": 209063,
+      "duplicate_id_rows": 0,
+      "duplicate_full_rows": 0,
+      "missing_by_column": {
+        "row_id": 0,
+        "prediction": 0
+      },
+      "nonnumeric_predictions": 0,
+      "infinite_predictions": 0,
+      "negative_predictions": 0,
+      "zero_predictions": 0,
+      "sample_reference": "/Users/nghiatranyeuem/Downloads/iaa-ai-assisted-hackathon-2026-part-2/emerging/sample_submission.parquet",
+      "sample_sha256": "160fc59043f1012337605c8d8446c0efbf81458e046cf02df9186d6f909d59ef",
+      "sample_rows": 209063,
+      "missing_sample_ids": 0,
+      "extra_sample_ids": 0,
+      "test_rows": 209063,
+      "missing_test_ids": 0,
+      "extra_test_ids": 0,
+      "test_reference_quality": {
+        "motor": {
+          "test_rows": 90521,
+          "test_unique_ids": true,
+          "raw_exposure_greater_than_1_005": 0,
+          "raw_exposure_nonpositive": 0,
+          "raw_exposure_missing": 0,
+          "date_derived_exposure_min": 0.0027397260273972603,
+          "date_derived_exposure_max": 1.0,
+          "date_derived_exposure_years_sum": 79007.00821917808,
+          "raw_exposure_differs_from_date_derived_over_1e_6": 75094,
+          "raw_exposure_maximum_absolute_difference_from_dates": 4.931506849320533e-05,
+          "raw_exposure_differs_from_date_derived_over_1e_4": 0,
+          "new_business_count": 68823,
+          "new_business_share": 0.7602987152152539,
+          "period_start_years": [
+            2025
+          ]
+        },
+        "buildings": {
+          "test_rows": 52295,
+          "test_unique_ids": true,
+          "raw_exposure_greater_than_1_005": 0,
+          "raw_exposure_nonpositive": 0,
+          "raw_exposure_missing": 0,
+          "date_derived_exposure_min": 0.0027397260273972603,
+          "date_derived_exposure_max": 1.0,
+          "date_derived_exposure_years_sum": 47376.38356164384,
+          "raw_exposure_differs_from_date_derived_over_1e_6": 42647,
+          "raw_exposure_maximum_absolute_difference_from_dates": 4.931506849320533e-05,
+          "raw_exposure_differs_from_date_derived_over_1e_4": 0,
+          "new_business_count": 39716,
+          "new_business_share": 0.7594607515058801,
+          "period_start_years": [
+            2025
+          ]
+        },
+        "contents": {
+          "test_rows": 66247,
+          "test_unique_ids": true,
+          "raw_exposure_greater_than_1_005": 0,
+          "raw_exposure_nonpositive": 0,
+          "raw_exposure_missing": 0,
+          "date_derived_exposure_min": 0.0027397260273972603,
+          "date_derived_exposure_max": 1.0,
+          "date_derived_exposure_years_sum": 59016.46575342466,
+          "raw_exposure_differs_from_date_derived_over_1e_6": 54610,
+          "raw_exposure_maximum_absolute_difference_from_dates": 4.931506849320533e-05,
+          "raw_exposure_differs_from_date_derived_over_1e_4": 0,
+          "new_business_count": 50441,
+          "new_business_share": 0.7614080637613779,
+          "period_start_years": [
+            2025
+          ]
+        }
+      },
+      "repository_copy": "/Users/nghiatranyeuem/Downloads/iaa-pricing/final_submissions/part2_prediction_file.csv",
+      "repository_copy_sha256": "8e068da53ff159aaba2182383b7212b6b78bbd834b9b613cc1f80f271b9bee9b",
+      "repository_copy_rows": 209063,
+      "repository_comparison": {
+        "same_id_set": true,
+        "same_id_order": true,
+        "differing_prediction_values": 0,
+        "mean_absolute_prediction_difference": 0.0,
+        "maximum_absolute_prediction_difference": 0.0,
+        "prediction_pearson_correlation": 1.0,
+        "selected_prediction_total": 80363158.90185969,
+        "repository_prediction_total": 80363158.90185969,
+        "repository_prediction_min": 0.069662147190548,
+        "repository_prediction_max": 7514.305553680601
+      },
+      "overall_prediction_distribution": {
+        "count": 209063,
+        "sum": 80363158.90185969,
+        "mean": 384.3968511972931,
+        "std_population": 401.42224108601386,
+        "min": 0.069662147190548,
+        "p01": 7.280666342127738,
+        "p05": 32.875666436946645,
+        "p50": 268.13308003267827,
+        "p95": 1169.9736112499622,
+        "p99": 1827.2387645772603,
+        "max": 7514.305553680601
+      },
+      "by_line": {
+        "motor": {
+          "count": 90521,
+          "sum": 54682551.4111773,
+          "mean": 604.0869125526375,
+          "std_population": 393.62207283182016,
+          "min": 0.5200014256415905,
+          "p01": 20.05983916230345,
+          "p05": 106.81440903585704,
+          "p50": 514.3377627394624,
+          "p95": 1406.0294913531295,
+          "p99": 1911.6522947877324,
+          "max": 3547.6870988758383,
+          "exposure_years_sum": 79007.00821917808,
+          "aggregate_predicted_cost_per_exposure_year": 692.1227957332488,
+          "max_divided_by_line_mean": 5.872809069616631,
+          "rows_at_or_above_100_times_line_mean": 0,
+          "new_business_share": 0.7602987152152539,
+          "segments": {
+            "renewal": {
+              "rows": 21698,
+              "prediction_sum": 8971403.221626863,
+              "exposure_years": 18288.353424657536,
+              "aggregate_predicted_cost_per_exposure_year": 490.55281321997194
+            },
+            "new_business": {
+              "rows": 68823,
+              "prediction_sum": 45711148.18955044,
+              "exposure_years": 60718.65479452055,
+              "aggregate_predicted_cost_per_exposure_year": 752.8353245677564
+            }
+          }
+        },
+        "buildings": {
+          "count": 52295,
+          "sum": 19435603.41992253,
+          "mean": 371.6531871100972,
+          "std_population": 418.31457405799995,
+          "min": 0.3081843824363869,
+          "p01": 12.899920481747419,
+          "p05": 63.91730239529593,
+          "p50": 265.4572057909785,
+          "p95": 1000.1835771913007,
+          "p99": 2286.7325207530835,
+          "max": 7514.305553680601,
+          "exposure_years_sum": 47376.38356164384,
+          "aggregate_predicted_cost_per_exposure_year": 410.2382233256338,
+          "max_divided_by_line_mean": 20.21859576157648,
+          "rows_at_or_above_100_times_line_mean": 0,
+          "new_business_share": 0.7594607515058801,
+          "segments": {
+            "renewal": {
+              "rows": 12579,
+              "prediction_sum": 3898253.4013124127,
+              "exposure_years": 11009.531506849315,
+              "aggregate_predicted_cost_per_exposure_year": 354.0798624253183
+            },
+            "new_business": {
+              "rows": 39716,
+              "prediction_sum": 15537350.018610122,
+              "exposure_years": 36366.852054794515,
+              "aggregate_predicted_cost_per_exposure_year": 427.23934409279497
+            }
+          }
+        },
+        "contents": {
+          "count": 66247,
+          "sum": 6245004.070759858,
+          "mean": 94.26848115023863,
+          "std_population": 91.82399232873175,
+          "min": 0.069662147190548,
+          "p01": 2.999795206631642,
+          "p05": 16.70183328461569,
+          "p50": 73.50209094714957,
+          "p95": 224.73826449384904,
+          "p99": 493.56021959354416,
+          "max": 2473.217855419044,
+          "exposure_years_sum": 59016.46575342466,
+          "aggregate_predicted_cost_per_exposure_year": 105.81799487709017,
+          "max_divided_by_line_mean": 26.23589374986746,
+          "rows_at_or_above_100_times_line_mean": 0,
+          "new_business_share": 0.7614080637613779,
+          "segments": {
+            "renewal": {
+              "rows": 15806,
+              "prediction_sum": 1082890.534560923,
+              "exposure_years": 13562.106849315069,
+              "aggregate_predicted_cost_per_exposure_year": 79.84677798166828
+            },
+            "new_business": {
+              "rows": 50441,
+              "prediction_sum": 5162113.536198935,
+              "exposure_years": 45454.358904109584,
+              "aggregate_predicted_cost_per_exposure_year": 113.56696388764206
+            }
+          }
+        }
+      },
+      "checks": {
+        "exact_expected_columns": true,
+        "unique_column_headers": true,
+        "all_records_have_two_fields": true,
+        "nonempty_file": true,
+        "unique_ids": true,
+        "no_missing_ids": true,
+        "no_blank_or_whitespace_ids": true,
+        "no_leading_trailing_id_whitespace": true,
+        "predictions_numeric": true,
+        "predictions_finite": true,
+        "predictions_nonnegative": true,
+        "row_count_matches_sample": true,
+        "id_set_matches_sample": true,
+        "id_order_matches_sample": true,
+        "id_set_matches_test_files": true,
+        "id_order_matches_concatenated_test_motor_buildings_contents": true,
+        "reference_sample_unique_ids": true,
+        "reference_test_files_unique_combined_ids": true,
+        "all_rows_below_100_times_own_line_mean": true,
+        "repository_copy_byte_identical": true,
+        "repository_copy_data_identical_in_order": true
+      },
+      "structural_result": "PASS"
+    }
+  },
+  "part1_original_repository_discrepancy": {
+    "backup_path": "/Users/nghiatranyeuem/Downloads/iaa_submission_review/originals/repository_part1_before_review.csv",
+    "backup_sha256": "becd128f8d3a46abf84d3110c30e098bf9f14aae732ff3ad0c750eef6e6e3691",
+    "same_ids_in_order": true,
+    "differing_prediction_values": 626639,
+    "mean_absolute_difference": 6.489751021520065,
+    "max_absolute_difference": 1638.7845091978197,
+    "prediction_pearson_correlation": 0.9993501025646799,
+    "original_prediction_total": 218036936.8850156,
+    "selected_prediction_total": 218036936.8850156,
+    "by_line_prefix": {
+      "B": {
+        "rows": 184155,
+        "original_sum": 80843627.71705416,
+        "selected_sum": 80843627.71705416
+      },
+      "C": {
+        "rows": 187498,
+        "original_sum": 21000449.77393856,
+        "selected_sum": 21000449.77393856
+      },
+      "M": {
+        "rows": 254986,
+        "original_sum": 116192859.39402285,
+        "selected_sum": 116192859.39402285
+      }
+    },
+    "resolution": "The root reviewer preserved the prior repository file in this backup and copied the explicit user-selected submission_v14.csv into final_submissions/part1_prediction_file.csv. The selected prediction values were not edited."
+  },
+  "existing_test_suite": {
+    "attempted_command": "python3 -m pytest tests/ -q",
+    "result": "The initially supplied suite was not run: the selected Python environment had no pytest installed (No module named pytest). These observations describe the original project before portability changes by the root reviewer.",
+    "static_findings": [
+      "tests/test_submission.py and tests/test_data_quality.py hard-code /home/claude paths; these paths and work artifacts are unavailable in the supplied project.",
+      "test_submission.py selects a lexicographically sorted submission_v*.csv rather than the two user-selected final paths; it does not validate Part 2.",
+      "Exposure and category consistency tests require model-frame artifacts, which are absent from the supplied project.",
+      "The exact two selected CSVs have instead been independently checked here for schema, IDs, finite nonnegative predictions, outlier guardrails, and byte identity with repository copies."
+    ]
+  },
+  "performance_evidence": {
+    "score_verification": "Hidden test target values and authenticated Kaggle submission records are unavailable. This audit cannot recalculate D2, establish a leaderboard score/rank, or prove either file was submitted to Kaggle.",
+    "documentary_claims_only": {
+      "readme_part1_public_d2": 0.1294,
+      "readme_part1_rank": "8th of 37, team entry",
+      "readme_part2_public_d2": 0.1618
+    },
+    "historical_cv_file": "docs/cv_results_v1.json records an earlier model version; those values do not establish final-file validation performance."
+  },
+  "model_and_reproducibility_limitations": [
+    "Local sample/test files were treated as supplied competition references; their upstream authenticity was not independently verified online.",
+    "Finite nonnegative costs and complete IDs establish structural submission validity, not predictive accuracy or actuarial adequacy.",
+    "Summary costs per exposure year use exposure recomputed from inclusive policy dates, matching src/features.py and src/p2_prep.py; no target truth is used.",
+    "Existing code includes public-leaderboard-driven global and segment calibration (lb_calib.py, lb_lines.py, p2_lb_solve.py). Such calibration can overfit the public leaderboard and should be disclosed accurately.",
+    "The original build scripts depend on missing intermediate work/ and work_p2/ artifacts, hard-coded Linux paths, model weights and component predictions. The final CSVs alone cannot prove end-to-end reproducibility.",
+    "The README points to different historical work/ final filenames. The two final_submissions files can be identified unambiguously by the hashes recorded in this audit."
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "team": "Evan Tran & Toby Nguyen",
+  "members": [
+    "Evan Tran",
+    "Toby Nguyen"
+  ],
+  "review_date": "2026-10-30",
+  "repository": "https://github.com/cauboiwside/Ai-Hackathon-ML-Actuarial-2026",
+  "public_scores_team_confirmed": {
+    "part1": 0.12944,
+    "part2": 0.16515
+  },
+  "score_source": "Team confirmation in chat; not an independently retrieved Kaggle record.",
+  "scope": "Exact final-file integrity; full retraining remains incomplete.",
+  "files": [
+    {
+      "part": "part1",
+      "path": "final_submissions/part1_prediction_file.csv",
+      "selected_source": "submission_v14.csv",
+      "rows": 626639,
+      "bytes": 17756401,
+      "sha256": "6047189045f6746a79f3b22b1be757741245261566bd0bf17363fd42047878b5"
+    },
+    {
+      "part": "part2",
+      "path": "final_submissions/part2_prediction_file.csv",
+      "selected_source": "p2_submission_v17_FINAL.csv",
+      "rows": 209063,
+      "bytes": 5902939,
+      "sha256": "8e068da53ff159aaba2182383b7212b6b78bbd834b9b613cc1f80f271b9bee9b"
+    }
+  ]
+}

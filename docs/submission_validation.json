@@ -1,0 +1,109 @@
+{
+  "checked_at_utc": "2026-10-31T02:35:29.844531+00:00",
+  "passed": true,
+  "scope": "Prediction-file integrity only; model accuracy and competition-rule compliance are not established.",
+  "submissions": {
+    "part1": {
+      "file": "/Users/nghiatranyeuem/Downloads/iaa-pricing/final_submissions/part1_prediction_file.csv",
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "official_sample": "/Users/nghiatranyeuem/Downloads/public/sample_submission.parquet",
+      "bytes": 17756401,
+      "sha256": "6047189045f6746a79f3b22b1be757741245261566bd0bf17363fd42047878b5",
+      "columns": [
+        "row_id",
+        "prediction"
+      ],
+      "rows": 626639,
+      "expected_rows": 626639,
+      "duplicate_row_ids": 0,
+      "line_counts": {
+        "B": 184155,
+        "C": 187498,
+        "M": 254986
+      },
+      "prediction_summary": {
+        "B": {
+          "count": 184155,
+          "min": 0.4778997033614596,
+          "max": 21711.295199109332,
+          "mean": 438.9977340667056,
+          "sum": 80843627.71705417
+        },
+        "C": {
+          "count": 187498,
+          "min": 0.08633783601327218,
+          "max": 3082.2768763378226,
+          "mean": 112.0035934993363,
+          "sum": 21000449.77393856
+        },
+        "M": {
+          "count": 254986,
+          "min": 0.4499225722170704,
+          "max": 7527.822821789393,
+          "mean": 455.68329003954284,
+          "sum": 116192859.39402287
+        }
+      },
+      "official_sample_check": {
+        "rows": 626639,
+        "missing_ids": 0,
+        "extra_ids": 0,
+        "same_order": true,
+        "sha256": "9529f3b6a679d3410350baa7c2ef3fb085d1d8843a838360c5852dfe820d4d95"
+      }
+    },
+    "part2": {
+      "file": "/Users/nghiatranyeuem/Downloads/iaa-pricing/final_submissions/part2_prediction_file.csv",
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "official_sample": "/Users/nghiatranyeuem/Downloads/iaa-ai-assisted-hackathon-2026-part-2/emerging/sample_submission.parquet",
+      "bytes": 5902939,
+      "sha256": "8e068da53ff159aaba2182383b7212b6b78bbd834b9b613cc1f80f271b9bee9b",
+      "columns": [
+        "row_id",
+        "prediction"
+      ],
+      "rows": 209063,
+      "expected_rows": 209063,
+      "duplicate_row_ids": 0,
+      "line_counts": {
+        "B": 52295,
+        "C": 66247,
+        "M": 90521
+      },
+      "prediction_summary": {
+        "B": {
+          "count": 52295,
+          "min": 0.3081843824363869,
+          "max": 7514.305553680601,
+          "mean": 371.65318711009724,
+          "sum": 19435603.419922534
+        },
+        "C": {
+          "count": 66247,
+          "min": 0.069662147190548,
+          "max": 2473.217855419044,
+          "mean": 94.26848115023863,
+          "sum": 6245004.070759858
+        },
+        "M": {
+          "count": 90521,
+          "min": 0.5200014256415905,
+          "max": 3547.6870988758383,
+          "mean": 604.0869125526375,
+          "sum": 54682551.4111773
+        }
+      },
+      "official_sample_check": {
+        "rows": 209063,
+        "missing_ids": 0,
+        "extra_ids": 0,
+        "same_order": true,
+        "sha256": "160fc59043f1012337605c8d8446c0efbf81458e046cf02df9186d6f909d59ef"
+      }
+    }
+  }
+}

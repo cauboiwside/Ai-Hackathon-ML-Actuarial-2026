@@ -1,62 +1,98 @@
 # Actuarial Pricing Across Markets with AI Assistance
 
-**Team:** Toby Nguyen (solo)
-**Repository:** [GITHUB URL]  **Part 1 public LB:** 0.1294 (8th of 37, team entry; the file submitted here is the solo version of the same pipeline, est. 0.1286)  **Part 2 public LB:** 0.1652 (solo; from 0.1379 and 28th of 34 on the first submission)
+**Team:** Evan Tran & Toby Nguyen
 
-## 1. Approach
+**Authors:** Evan Tran and Toby Nguyen
 
-We priced three lines (private motor, home buildings, home contents) for a developed market (Part 1) and then adapted the approach to an emerging market with two years of history and a 2025 book that is 76% new business (Part 2). The workflow was the same in both parts: **data-quality scan → claims to ultimate → modelling → validation → level calibration → guardrails**, with AI (Claude) doing the exploration, coding and first-pass diagnostics, and the human reviewing, challenging and deciding. Every decision, who proposed it, and how it was verified is in `docs/decision_log.md` (about 40 entries).
+**Code:** https://github.com/cauboiwside/Ai-Hackathon-ML-Actuarial-2026
 
-**Target.** For each policy row, the capped cost of claims with a loss date in the row's period, net of excess and recoveries, excluding declined claims (caps: motor 250k, buildings 300k, contents 60k; the excess above the cap is spread back as a large-loss load of 1.044 for motor, ≈1.00 for home). The claims file is a 31 December 2024 snapshot, so recent years are immature. We first tried to bring each claim to ultimate individually (report-lag weights by peril, case development for bodily injury) and *reversed that decision* when a controlled experiment showed it hurt predictive accuracy (held-out D² 0.060 vs 0.064): per-claim weights of up to 5× add noise. The final approach models capped reported cost and applies IBNR, trend and development as aggregate level factors afterwards.
 
-**Models (Part 1).** Three gradient-boosting models per line, blended: (i) a Tweedie (p = 1.5) model with a log-exposure offset, matching the scoring metric; (ii) a frequency × severity pair (Poisson count × Gamma size); (iii) a per-peril frequency × severity model (6 perils for buildings, 4 for contents, 5 for motor), the structure a home-pricing team would use. High-cardinality categoricals (vehicle model, occupation, region) use out-of-fold target encoding rather than native splits, which removed a large overfit on `make_model`. Validation is 4-fold cross-validation **grouped by policy**, so a policy's years never straddle train and test. Blend weights are fitted on out-of-fold predictions by Tweedie deviance.
+## 1 Objective and modelling approach
 
-Held-out D² per line (Part 1): Tweedie 0.091 / 0.100 / 0.092; frequency-severity 0.094 / 0.102 / 0.095; per-peril 0.094 / 0.102 / 0.093; blend 0.095 / 0.105 / 0.097 (motor / buildings / contents).
+We developed insurance claim-cost predictions for private motor, home buildings and home contents, first in a developed market and then in an emerging market with less history. The solution combines actuarial target construction, gradient-boosting models, cross-validation and calibration. The main adaptation was to retain developed-market risk patterns while allowing local claim levels and new-business experience to differ. AI assisted the exploration, implementation, diagnostics and drafting; we retained responsibility for the submitted solution.
 
-## 2. Data quality, leakage and the things we chose not to use
+### Data and target construction
 
-The datasets contained planted problems. We caught them in two ways: a systematic scan, and diagnostics that produced impossible results.
+Policies are joined to customer, address and weather data. Claims are matched by policy and loss date to the relevant policy period, duplicate claim IDs are removed, and repudiated claims contribute zero cost. The implemented cost is incurred-to-date less recoveries, floored at zero, with claim caps of 250,000 currency units for motor, 300,000 for buildings and 60,000 for contents. The code does not separately deduct policy excess. Exposure is recomputed from inclusive period dates and expressed in years.
 
-- **Exposure in days.** About 900 training rows per line (Part 1) and 50 per line (Part 2) carried exposure as 365, 327, 89… instead of years. With a log-exposure offset, one such row carries 365× its weight: 0.4% of rows held 26% of predicted cost. We found it because actual-to-expected by exposure band was above 1 in every band yet below 1 overall, which is arithmetically impossible unless rows fall outside the bands. Fix: recompute exposure from the period dates. Lesson recorded: the scan now runs *before* modelling, and did in Part 2.
-- **Scrambled codes.** `construction_type` appeared as Brick/BRICK/brick, STONE, NON_STANDARD and W/w/T/t for timber (Part 1) and as BRK/MIX/STN/WOD (Part 2); `occupation` in Part 2 carries a trailing space on every value. Normalised to the dictionary's four levels; W and T were merged only after checking they have identical claim frequency.
-- **Target leakage.** `customer_service_contacts` is recorded *during* the policy period and is driven by claims: zero contacts means zero claims in 100% of rows, and in-sample D² jumps to 0.62. It is not knowable at quote time, so we excluded it. In Part 2 we verified the test column is scrubbed (its distribution matches training rows with no claims), so using it would also have been self-defeating.
-- **Current premium.** `written_premium` is the insurer's own price; pricing off it is circular. Excluded on principle, and the experiment agreed: it reduces held-out D² (−0.006 motor).
-- **Marketing fields** (campaign, segment, previous insurer): high model gain but flat claim rates across levels, i.e. noise. Excluded.
-- **Gender (Part 2).** Present only in the emerging market. We treated it as a regulatory decision, not a modelling one: an insurer expanding from a market where gender rating is prohibited should not adopt it abroad. We measured the cost of excluding it: +0.0002 / −0.002 / +0.001 D² by line, i.e. nothing, because driver age band and vehicle already carry the signal.
+An initial approach adjusted individual claims for reporting delay and development. The project experiments favoured modelling capped reported cost instead, because large individual adjustment weights added noise. Aggregate level adjustments then addressed trend, reporting development and large-loss loads. Bodily-injury development remains a judgement rather than an empirically identified factor, since the data do not contain a full development history.
 
-## 3. Adapting to the new market
+### Part 1 model design
 
-What changed: two years instead of four; 5% of the policy count; no credit band, exact ages (banded instead), mileage or telematics; a new region code system; 12% missing values; severities 20–40% lower; motor frequency higher (18% vs 14%); a far hailier climate (14–17 hail days vs 6); and a 2025 book that is 76% new business acquired from a broker versus 14% in the history.
+For each line we tested a Tweedie LightGBM model with variance power 1.5, a Poisson frequency model multiplied by a Gamma severity model, and a per-peril frequency-severity model. Exposure enters the expected-cost calculation through offsets or equivalent exposure-weighted rate modelling. Smoothed target encodings represent high-cardinality factors such as vehicle model and occupation. Out-of-fold predictions support model comparisons and blend selection.
 
-What we carried over, and how. Four candidate models per line, all validated with policy-grouped cross-validation on the emerging rows only:
+The code uses four policy-grouped folds in Part 1, keeping repeated years of the same policy together. This is useful protection against repeated-policy overlap, but it does not make the evaluation fully independent. Target encodings were constructed once across folds, so encodings for an outer fold's training rows can depend on outer-validation labels. Blend weights and levels were also tuned on the same out-of-fold predictions used for reporting. Historical validation scores are therefore exploratory estimates and may be optimistic.
 
-| Model | Idea | Motor | Buildings | Contents |
-|---|---|---|---|---|
-| Transfer, Tweedie (T) | developed-market model on the common feature set, re-levelled | 0.044 | 0.100 | 0.095 |
-| Transfer, frequency × severity (T2) and per-peril (T3) | same, two-part structure | 0.059 / 0.060 | 0.107 / 0.097 | 0.102 / 0.103 |
-| Local (L) | emerging data only, heavily regularised | 0.044 | 0.048 | 0.072 |
-| Offset (O2, O3) | local model trained on deviations from a transfer prior (credibility weighting) | 0.060 | 0.111 | 0.105 |
-| Pooled (P, PF2) | both markets together with a market flag and developed-market encodings as priors; Tweedie and frequency × severity | 0.057 / 0.061 | 0.085 / 0.094 | 0.102 / 0.107 |
-| **Blend** | weights fitted on held-out data | **0.063** | **0.112** | **0.110** |
 
-**GLM benchmark.** A Tweedie log-link GLM (one-hot factors, developed-market encodings for vehicle model and occupation, the transfer prior as a credibility term, ridge penalty) scores 0.044 / 0.013 / 0.081 on the same folds. It is the explainable baseline and its effects read as a rating table should (motor: 17–24 band +42%, comprehensive cover +25%, direct channel −27%). The gap to the tree models is largest on buildings, where the risk is driven by flood-zone × elevation × rainfall interactions that a main-effects GLM cannot express. It enters the final blend only for contents (weight 0.14), where it was worth +0.0001 on the leaderboard.
+## 2 Adaptation to the emerging market
 
-Three things stood out. The developed-market prior is worth twice the local data on the home lines, and the credibility (offset) form is the best single model there. The *frequency × severity* form of the prior transfers far better than the single Tweedie model (motor 0.059 vs 0.044): frequency relativities travel across markets, severity levels do not, and the two-part structure keeps them separate. On the leaderboard that one change was worth +0.012, three times its held-out gain, because the 2025 test book is new business and the developed-market priors describe it better than two years of mostly-renewal local history do. Motor remains the hardest line here because its strongest rating factors are missing. We tested autocalibration (Denuit, Charpentier & Trufin, 2021) and rejected it: with this little data the decile actual-to-expected ratios are noise.
+The emerging market provides two years of history and a smaller training sample. Several developed-market features are absent or coarser, including exact ages, mileage, telematics and credit information. Category codes differ and missingness is greater. The project diagnostics also identify a substantial shift toward new business in the prediction book. These changes weaken a model trained only on the small local history and make portfolio composition a central calibration uncertainty.
 
-**New business.** New-business policies cost 1.6× renewals in the local motor data (1.3× contents) versus 1.4× / 1.0× in the developed market, on very thin local exposure. We applied a credibility-weighted uplift, then measured the remaining level error on the public leaderboard (§4) by line and segment. The local evidence had over-stated the motor new-business uplift and under-stated renewals; the final levels are motor new business ×1.35 and renewals ×1.37 over the pooled history, home lines ×1.18 / ×0.84 (buildings / contents). We report this as the main uncertainty of the Part 2 price: the 2025 broker book is costlier than the two-year history, and only experience will settle by how much.
+### Transfer and local evidence
 
-**Pricing tool (`src/pricing_tool.py`, `docs/reference_policies_priced.csv`).** Technical premium P solves P = R·(1 + cat) + F·exposure + P·(variable + commission + tax + profit), using the `expenses` table (emerging: 85 CU fixed, 15% variable, 20% broker commission, 8% premium tax, 8% target margin, 12% catastrophe reinsurance on property risk premium). The result for the 20 reference policies is the most important commercial finding of Part 2: **the broker book is unprofitable at its current prices.** Technical premium is 1.6–2.5× written premium on motor, 2.4–2.9× on buildings and 4–6× on contents, because the loadings consume half of every premium and the 85 CU fixed expense alone exceeds the expected claims of a typical contents policy. The conclusion survives a 30% error in the risk premium. The tool reports the unbiased expected cost separately from the metric-optimal prediction, which differ because the Tweedie-1.5 score weights policies by μ^−½.
+We harmonised shared features, converted developed-market ages to the available bands, normalised construction codes and occupation text, and omitted unavailable factors. Developed-market region identifiers were not treated as interchangeable with emerging-market regions. Five policy-grouped folds on emerging-market rows compare transfer, local, offset and pooled approaches.
 
-## 4. Use of AI, and how we verified it
+| Candidate | How it uses the two markets |
+| --- | --- |
+| Transfer | Train on developed-market common features and adjust the local level. |
+| Local | Train on emerging-market experience with stronger regularisation. |
+| Offset | Fit local deviations around a transferred prediction used as a prior. |
+| Pooled | Combine both markets, with a market indicator and greater local weight. |
 
-AI wrote essentially all code and ran all experiments; the human directed, challenged and decided. The useful part of that arrangement was speed of *falsification*: around 60 model variants were tested in Part 1 and 20 in Part 2, each on the same held-out folds, and most were rejected. Examples of AI output that was wrong and caught: the per-claim ultimate weighting (reversed by experiment); a per-peril model whose frequency component started at one claim per policy-year because the base rate was missing from the offset (caught by a −6 held-out D²); a leaderboard "stretch" adjustment that validated offline and failed online (reverted); a tempered level correction built on an unverified assumption (reverted, then solved exactly). Examples where the AI's challenge was right: the leakage column, the exposure trap, and the finding that history features add nothing in this synthetic data.
+Frequency-severity and per-peril versions of the transferred prior expanded the ensemble. A regularised Tweedie GLM provided an interpretable benchmark and entered the contents blend. The saved pre-segment ensemble diagnostics report D-squared of approximately 0.063 for motor, 0.112 for buildings and 0.111 for contents. These are recorded training diagnostics, with the validation limitations described above; they are not private-test or independent deployment results.
 
-**Leaderboard calibration without blind probing.** For a uniform multiplier *s* on the predictions, 1 − D²(s) = k + b·s^−½ + c·s^½, where k depends only on the truth and c is computable from the predictions. Three scored submissions identify k, b, c exactly; thereafter any new model needs one score to locate its optimal level, and single-segment perturbations identify per-line and per-segment levels (three equations, three lines). This replaced guesswork with a closed-form solve and was worth +0.004 in Part 1 and +0.009 in Part 2. In the final hours the same single-segment solve was applied to rating-factor segments (payment method, urban density, cover type, property type), one probe each, lifting the Part 2 score from 0.1624 to 0.1652; every multiplier is recorded in the log and the write-up treats them as public-sample calibration, not model knowledge. Its failure mode is instructive and logged: the two times we applied a *partially* identified solve (one assumption to close the system), the score fell; the fully identified solves predicted the outcome to within 0.0003 every time. It is disclosed here as what it is: the public 33% of the test set used as a stand-in for the first year of actual experience.
+The experiments favoured transfer-informed models on the property lines. Separating frequency and severity was a useful way to allow claim levels to differ while retaining shared risk patterns. Local new-business and regional adjustments were treated cautiously because sparse experience makes them unstable. One multi-factor balance correction improved its fitting sample but deteriorated under a further cross-fit check and was rejected.
 
-## 5. Guardrails, limitations and remaining uncertainty
+### Reported competition results
 
-**Automated tests** (`tests/`, 7 passing): submission format, every row exactly once, non-negative and finite, overall level within 25% of the training level, no row above 100× its line mean, exposure in years, categorical levels consistent between train and test.
-**Governance:** a decision log with proposer and verification for every change; features excluded on principle regardless of score; a separate unbiased expected cost for pricing use; git history showing how the solution developed.
-**Human review points:** large-loss cap levels; bodily-injury development; the new-business uplift; the gender decision; any leaderboard-derived level above ±20%.
+Our final public-leaderboard scores, confirmed by the team, are 0.12944 for Part 1 and 0.16515 for Part 2. The project log also records the Part 2 v17 score and an initial Part 2 score of 0.1379. Public scores are reported separately from the historical cross-validation diagnostics because the evaluation samples and calibration procedures differ. No private-leaderboard result or final rank is claimed for either part.
 
-**Limitations.** Bodily-injury development is a judgment (the data has no development history); the Part 1 experiment that applied it to the 2025 level lowered the score, so it is reported as a sensitivity (±25% on motor level) rather than applied. Motor in the emerging market is weakly predictable without mileage, exact age and telematics. Buildings swung from 512 to 308 per policy-year between the two local years; which year 2025 resembles cannot be known from the data. All leaderboard-derived levels rest on a 33% public sample. Finally, these are synthetic markets: past claims carry no information beyond the static risk factors here, which is not true of real books, and a real deployment would add experience rating.
+
+## 3 Major decisions and AI assisted workflow
+
+### Data quality and feature guardrails
+
+The data-quality work corrected exposure values recorded in days rather than years and inconsistent construction-type labels. An exposure error is especially damaging because the exposure offset scales the entire prediction. The workflow was changed so that these checks run before modelling. Part 2 also required whitespace removal and explicit alignment of category definitions across markets.
+
+Customer-service contacts were excluded because they can reflect claims occurring during the insured period and would not be available at quotation. Written premium was excluded from the primary risk model to avoid learning the insurer's existing price. Marketing and administrative fields were also omitted. Gender was excluded in the emerging-market pipeline as a governance choice; this write-up does not assert a legal requirement for an unspecified jurisdiction. Weather and household features would require an explicit quote-time availability check before live use.
+
+### How AI contributed and how decisions were checked
+
+The decision log attributes substantial exploration, coding and diagnostics to Claude, with human direction and review. AI accelerated candidate generation and helped investigate unusual results. It did not remove the need to check the target definition, feature availability, offsets, validation design or final files. Git history and the decision log retain the development sequence, including rejected approaches.
+
+Examples of corrections include reversing individual claim-development weights after an adverse experiment, fixing a missing frequency base-rate offset after implausible validation results, and rejecting calibration changes that did not hold up under further checks. A final Codex-assisted review checked the supplied CSVs and revised this write-up, including correcting an unsupported distinction between a Tweedie-optimal target and an unbiased expected-cost target. Tweedie deviance targets the conditional mean; a calibrated fitted prediction is not proof of unbiasedness.
+
+### Use of public leaderboard feedback
+
+The final solution uses public scores to calibrate overall, line, new-business and selected rating-segment levels. The calibration scripts exploit the analytical form of Tweedie deviance under prediction multipliers. The curve is exact for a fixed set of scored rows, but practical estimation uses full-test prediction summaries as a proxy for the unknown public subset and receives rounded scores. Its conclusions therefore depend on representativeness and numerical assumptions.
+
+Repeated public-score feedback makes the public leaderboard an adaptive tuning sample. It is not independent validation and is not equivalent to observing a new year of actual claims. The final Part 2 segment adjustments are disclosed as public-sample calibration. Their apparent improvement may not persist on the private set or in a different portfolio; the public score should not be interpreted as an unbiased generalisation estimate.
+
+
+## 4 Final artifacts guardrails and limitations
+
+### Verification of the selected prediction files
+
+The final-file review on 30 October 2026 compared both selected CSVs with the supplied official sample submissions and test-policy files. Each has exactly the required columns, every required ID once, matching sample order, and finite positive predictions. No hidden test-claim outcomes were available, so this establishes submission integrity rather than predictive accuracy.
+
+| Check | Part 1 v14 | Part 2 v17 |
+| --- | --- | --- |
+| Prediction rows | 626,639 | 209,063 |
+| Schema | row_id, prediction | row_id, prediction |
+| Missing or duplicate IDs | 0 | 0 |
+| Missing, non-finite or negative predictions | 0 | 0 |
+| Official sample ID set and order | Match | Match |
+
+The code package uses final_submissions/part1_prediction_file.csv and final_submissions/part2_prediction_file.csv as the canonical artifacts. SHA-256 hashes tie these copies to the two selected source files. An earlier Part 1 repository copy had different row-level predictions despite identical aggregate totals; it was preserved separately before the selected v14 became canonical. Portable validation commands and the detailed audit are included with the code.
+
+### Pricing illustration and operational guardrails
+
+The pricing example converts a risk premium to a technical premium by adding catastrophe and fixed-expense allowances and dividing by the fraction remaining after variable expenses, commission, tax and target margin. Its saved reference-policy output uses an earlier v8 model. The reported loading ratio is technical premium divided by risk premium, not divided by written premium. These examples illustrate expense effects; they do not establish that the entire broker book is unprofitable or demonstrate final-v17 commercial performance.
+
+Before deployment we would require nested encoding and blend evaluation, an untouched temporal or external holdout, quote-time feature checks, sensitivity analysis for development and large losses, and review of large calibration movements. Positive-output checks protect the file format but cannot establish fair, adequate or stable insurance rates.
+
+### Reproducibility and remaining uncertainty
+
+The repository preserves the original development history and supplies code, decision records, dependency guidance, final CSVs and validation tooling. Competition data are kept outside the repository. The exact supplied Part 1 v14 construction recipe and the complete final Part 2 segment-correction sequence are not fully captured as executable pipelines; several legacy scripts also retain environment-specific paths. The current package supports exact final-artifact verification, while end-to-end retraining remains incomplete. These are reproducibility limitations of the submitted solution.
+
+Sparse emerging-market experience, missing motor predictors, uncertain claims development, changing new-business mix and public-sample calibration remain the principal modelling risks. Results on these synthetic markets do not establish how the method would perform on a live insurance portfolio. The next priority would be independent validation and completion of the recorded training and final-assembly recipes before making production decisions.

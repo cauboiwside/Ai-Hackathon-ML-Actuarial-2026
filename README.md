@@ -1,16 +1,53 @@
-# IAA AI-Assisted Hackathon 2026 — actuarial pricing across markets
+# IAA AI Assisted Hackathon 2026
 
-Toby Nguyen. Part 1 (developed market) public LB 0.1294 (8th of 37, team entry); Part 2 (emerging market) public LB 0.1618 (solo).
+**Team: Evan Tran & Toby Nguyen**
 
-**Read first:** `docs/writeup.md` (5 pages) · `docs/decision_log.md` (every decision, who proposed it, how it was verified) · `docs/part2_process.md`.
+**Members: Evan Tran and Toby Nguyen**
 
-## Pipeline
+Insurance claim-cost predictions for motor, home buildings and home contents, adapted from a developed to an emerging market. AI assisted exploration, implementation, diagnostics and documentation. The existing Git history and decision log preserve the development process.
 
-Part 1 (`src/`, run in this order): `prep.py` (claims → policy rows) · `level.py` (IBNR, caps, trend) · `features.py` (joins + DQ fixes) · `train_v2.py` (Tweedie GBM, OOF target encoding) · `train_fs.py` (frequency × severity) · `train_fs_peril.py` (per-peril) · `build_final.py` (blend) · `lb_calib.py`, `lb_lines.py` (closed-form leaderboard level solve) · `dq_scan.py`, `experiment*.py`, `hist_features.py` (experiments, mostly negative, all logged).
+## Final submission artifacts
 
-Part 2 (`src/p2_*.py`): `p2_dq.py` · `p2_prep.py` (emerging frames + developed common-feature frames) · `p2_train.py` (transfer / local / offset) · `p2_pooled.py`, `p2_pooled_fs.py` (pooled two-market) · `p2_improve.py`, `p2_peril.py`, `p2_peril_level.py`, `p2_peril_cred.py` (frequency-severity and per-peril transfer priors, credibility offsets) · `p2_glm.py` (explainable benchmark) · `p2_lb_solve.py` (segment level solve) · `p2_build_v3.py` (assemble a submission from stack weights + segment multipliers) · `pricing_tool.py` (risk premium → technical premium; `docs/reference_policies_priced.csv`).
+| Part | Canonical file | Rows | Team confirmed public score |
+| --- | --- | ---: | ---: |
+| Week 1 | [part1_prediction_file.csv](final_submissions/part1_prediction_file.csv) | 626,639 | 0.12944 |
+| Week 2 | [part2_prediction_file.csv](final_submissions/part2_prediction_file.csv) | 209,063 | 0.16515 |
 
-Tests: `pytest tests/` (submission format, exposure in years, categorical consistency, level sanity).
+The selected sources are `submission_v14.csv` and `p2_submission_v17_FINAL.csv`. Both canonical copies match these sources byte for byte. Each was checked against its official sample and all three test-policy tables: exact `row_id,prediction` columns, every required ID once in sample order, and positive finite predictions. See the [audit](docs/prediction_audit.md), [validation report](docs/submission_validation.json) and [hash manifest](final_submissions/manifest.json).
 
-## Final files
-`work/submission_part1_final_solo.csv` (Part 1), `work_p2/p2_submission_v17.csv` (Part 2). Data is not in the repo (Kaggle licence); place the Part 1 parquet files in `/home/claude/data_raw/public/` and the Part 2 `emerging/` folder in `/home/claude/data_p2/` to reproduce.
+The earlier Part 1 repository copy differed at every prediction row despite identical line totals. The selected v14 is now canonical; the earlier version remains in Git history. No source prediction values were changed. File integrity does not establish predictive accuracy. Scores above were confirmed by the team; no private score or final rank is claimed.
+
+## Read and record
+
+- [Revised four-page write-up](docs/IAA_Hackathon_Writeup_Evan_Tran_and_Toby_Nguyen.docx) and [Markdown version](docs/writeup.md)
+- [Demo recording script](docs/video_script.md), designed for less than five minutes
+- [Submission checklist](docs/SUBMISSION_CHECKLIST.md)
+- [Reproduction instructions and outstanding gaps](docs/REPRODUCING.md)
+- [Historical decision log](docs/decision_log.md) and [Part 2 experiment notes](docs/part2_process.md)
+- [Review corrections](docs/REVIEW_NOTES.md)
+
+## Validate the files
+
+CSV checks need only Python's standard library:
+
+```sh
+python3 scripts/validate_submissions.py --report /tmp/iaa-validation.json
+python3 -m unittest discover -s tests -v
+```
+
+For exact ID checks against the official parquet samples, install `requirements.txt` in an isolated environment and run:
+
+```sh
+python3 scripts/validate_submissions.py \
+  --part1-sample /path/to/public/sample_submission.parquet \
+  --part2-sample /path/to/emerging/sample_submission.parquet \
+  --report /tmp/iaa-validation.json
+```
+
+The review ran 9 tests successfully; one generated-frame test class was skipped because model intermediates are absent. Tests do not retrain models or independently verify Kaggle results.
+
+## Models and evaluation
+
+Part 1 combines Tweedie LightGBM, frequency-severity and per-peril models. Part 2 compares transfer, local, offset and pooled approaches on harmonised features. The final solution uses public-leaderboard feedback, including rating-segment calibration. Public results are adaptive tuning results, not independent validation. Historical target encoding and blend selection also limit interpretation of cross-validation scores; see the write-up.
+
+This is an experiment archive with verifiable final artifacts. A complete end-to-end recipe for retraining and assembling exact v14/v17 predictions is still incomplete. Missing intermediates, final adjustment recipes and legacy paths are detailed in `docs/REPRODUCING.md`. Competition datasets are excluded; obtain them through the organiser's authorised distribution.
