@@ -10,7 +10,7 @@ Deadline supplied by the organiser: **30 October 2026 at 11:59:59 PM EDT**, equi
 - [x] Revise the write-up to four pages covering modelling, AI use, adaptation, assumptions, limitations and guardrails.
 - [ ] Record the demo using `docs/video_script.md`. Keep graded content within five minutes. A script alone does not satisfy the video requirement.
 - [x] Preserve original Git history and record exact final-file hashes and reproducibility gaps.
-- [ ] Verify all final artifacts are visible at [the GitHub repository](https://github.com/cauboiwside/Ai-Hackathon-ML-Actuarial-2026).
+- [x] Verify all final artifacts are visible at [the GitHub repository](https://github.com/cauboiwside/Ai-Hackathon-ML-Actuarial-2026).
 - [ ] Confirm that the intended prediction files have also been submitted to the two Kaggle competitions.
 - [ ] Upload or link all required artifacts in the final form and save the submission confirmation.
 
